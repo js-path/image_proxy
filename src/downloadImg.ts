@@ -4,16 +4,17 @@ import fs from "fs";
 const downloadImage = (url: string, filepath: string) => {
     return new Promise((resolve, reject) => {
         client.get(decodeURIComponent(url), (res) => {
-            try {
-                res.pipe(fs.createWriteStream(`${filepath}/${url}`)).once('close', () => { resolve(filepath) });
-            }
-
-            catch (err) {
+            if (res.statusCode === 200) {
+                res.pipe(fs.createWriteStream(`${filepath}/${url}`))
+                    .on('error', reject)
+                    .once('close', () => resolve(filepath));
+            } else {
                 res.resume();
-                throw err;
-            }
+                reject(new Error(`Request Failed With a Status Code: ${res.statusCode}`));
+
+            };
         });
     });
-}
+};
 
 export { downloadImage }

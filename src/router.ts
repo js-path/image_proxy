@@ -1,8 +1,8 @@
 import * as express from "express";
+import { getImage } from "./downloadController";
 
 const router = express.Router();
-import { checkIfImgExists } from "./downloadController"
 
-router.get("/", checkIfImgExists)
+router.get("/", getImage);
 
-export { router }
+export { router };
